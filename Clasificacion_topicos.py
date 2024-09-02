@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # %%
 # DEPENDENCIAS
 from network.repository import Repository
@@ -315,12 +316,19 @@ info_topicos_combinados = modelo_combinado.get_topic_info()
 print(info_topicos_2.tail(5))
 print(info_topicos_combinados.tail(10))
 
-nombre_topico_modelo_tres = ""
+nombre_topico_modelo_tres = ""  # Actualmente está vacío
 
-resumenes_seleccionados = [item[0] for item in zip(textos_tres, topicos_tres) if item[1] == info_topicos_2.loc[info_topicos_2["Name"] == nombre_topico_modelo_tres, "Topic"].values[0]]
-print(resumenes_seleccionados)
-print(modelo_tres.transform(resumenes_seleccionados))
-print(modelo_combinado.transform(resumenes_seleccionados))
+if nombre_topico_modelo_tres and nombre_topico_modelo_tres in info_topicos_2["Name"].values:
+    valores_filtrados = info_topicos_2.loc[info_topicos_2["Name"] == nombre_topico_modelo_tres, "Topic"].values
+    resumenes_seleccionados = [item[0] for item in zip(textos_tres, topicos_tres) if item[1] == valores_filtrados[0]]
+    
+    print(resumenes_seleccionados)
+    print(modelo_tres.transform(resumenes_seleccionados))
+    print(modelo_combinado.transform(resumenes_seleccionados))
+else:
+    print(f"No se encontró el nombre del tópico '{nombre_topico_modelo_tres}' en info_topicos_2['Name'].")
+    resumenes_seleccionados = []
+
 
 
 # %%
