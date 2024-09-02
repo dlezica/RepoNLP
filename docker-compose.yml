@@ -1,0 +1,41 @@
+version: '3'
+services:
+  opensearch-node:
+    image: opensearchproject/opensearch:2.9.0
+    container_name: opensearch-node
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g"  # Ajusta según la memoria disponible
+      - plugins.security.disabled=true        # Deshabilitar la seguridad y SSL
+      - network.bind_host=0.0.0.0             # Asegúrate de que esté accesible desde el exterior
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9600:9600
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    networks:
+      - opensearch-net
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.9.0
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch-node:9200  # Usar HTTP sin SSL
+      # No se especifican las variables de usuario y contraseña si la seguridad está deshabilitada
+    networks:
+      - opensearch-net
+    depends_on:
+      - opensearch-node
+
+volumes:
+  opensearch-data:
+
+networks:
+  opensearch-net:
